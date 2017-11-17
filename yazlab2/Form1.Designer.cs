@@ -33,6 +33,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
+            this.btnSolve = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnBrowse
@@ -89,11 +90,22 @@
             this.textBox4.Text = "000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
     "";
             // 
+            // btnSolve
+            // 
+            this.btnSolve.Location = new System.Drawing.Point(224, 38);
+            this.btnSolve.Name = "btnSolve";
+            this.btnSolve.Size = new System.Drawing.Size(75, 23);
+            this.btnSolve.TabIndex = 5;
+            this.btnSolve.Text = "SOLVE";
+            this.btnSolve.UseVisualStyleBackColor = true;
+            this.btnSolve.Click += new System.EventHandler(this.btnSolve_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(306, 479);
+            this.Controls.Add(this.btnSolve);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
@@ -113,6 +125,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button btnSolve;
     }
 }
 

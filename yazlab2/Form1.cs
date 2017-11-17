@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,7 +19,14 @@ namespace yazlab2
         {
             InitializeComponent();
         }
-        int[,] sudokuMatrix;
+        int[,] sudokuMatrix1;
+        int[,] sudokuMatrix2;
+        int[,] sudokuMatrix3;
+        int[,] sudokuMatrix4;
+        Thread th1;
+        Thread th2;
+        Thread th3;
+        Thread th4;
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             string sudokuSource = File.ReadAllText(@"C:\sudoku.txt");
@@ -56,17 +64,20 @@ namespace yazlab2
                 }
             }
 
-            sudokuMatrix = matrix;
-            print(0);
+            sudokuMatrix1 = matrix;
+            sudokuMatrix2 = matrix;
+            sudokuMatrix3 = matrix;
+            sudokuMatrix4 = matrix;
+            print(0 , sudokuMatrix1);
         }
-        private void print(int select)
+        private void print(int select , int[,] matrix)
         {
             string output="";
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    output += sudokuMatrix[i, j];
+                    output += matrix[i, j];
                 }
             }
             if (select==0)
@@ -92,6 +103,34 @@ namespace yazlab2
             {
                 textBox4.Text = output;
             }
+        }
+
+        private void btnSolve_Click(object sender, EventArgs e)
+        {
+            th1 = new Thread(solver1);
+            th1.Start();
+            th2 = new Thread(solver2);
+            th2.Start();
+            th3 = new Thread(solver3);
+            th3.Start();
+            th4 = new Thread(solver4);
+            th4.Start();
+        }
+        private void solver1()
+        {
+            MessageBox.Show("asdas");
+        }
+        private void solver2()
+        {
+
+        }
+        private void solver3()
+        {
+
+        }
+        private void solver4()
+        {
+
         }
     }
 }
