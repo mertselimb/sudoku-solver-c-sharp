@@ -20,10 +20,6 @@ namespace yazlab2
         int[,] sudokuMatrix3;
         int[,] sudokuMatrix4;
         bool stopSwitch = false;//When one thread ends this will end all
-        Thread th1;//Threads created
-        Thread th2;
-        Thread th3;
-        Thread th4;
         String answer1;//Answers to write in txt files 
         String answer2;
         String answer3;
@@ -32,6 +28,10 @@ namespace yazlab2
         int step2=0;
         int step3=0;
         int step4=0;
+        string timeUsed1="";
+        string timeUsed2="";
+        string timeUsed3="";
+        string timeUsed4="";
         #endregion
         #region Clicks//Button click functions needed for form ui
         private void btnBrowse_Click(object sender, EventArgs e)//When browse clicked
@@ -70,7 +70,6 @@ namespace yazlab2
                     break;
                 }
             }
-
             sudokuMatrix1 = matrix;//Data transferred to public matrix
             sudokuMatrix2 = matrix;
             sudokuMatrix3 = matrix;
@@ -87,13 +86,13 @@ namespace yazlab2
             myTimer.Tick += new EventHandler(printAll);//Timer for showing what happens in solve function
             myTimer.Interval = 1;
             myTimer.Start();
-            th1 = new Thread(solver1);//Threads are started with their own solve function
+            Thread th1 = new Thread(solver1);//Threads are started with their own solve function
             th1.Start();
-            th2 = new Thread(solver2);
+            Thread th2 = new Thread(solver2);
             th2.Start();
-            th3 = new Thread(solver3);
+            Thread th3 = new Thread(solver3);
             th3.Start();
-            th4 = new Thread(solver4);
+            Thread th4 = new Thread(solver4);
             th4.Start();
         }
         /*private void btnPrint_Click(object sender, EventArgs e)//Written before but not used prints all matrixs
@@ -149,6 +148,7 @@ namespace yazlab2
         }
         private void printAll(Object myObject, EventArgs myEventArgs)//Pritns all for timer function
         {
+            
             print(1, sudokuMatrix1);//Print selected matrix to It's textbox
             print(2, sudokuMatrix2);
             print(3, sudokuMatrix3);
@@ -158,23 +158,39 @@ namespace yazlab2
         #region Threads//Thread functions
         private void solver1()//Function to be called for thread starter
         {
+            Stopwatch stopWatch1 = new Stopwatch();
+            stopWatch1.Start();
             Solve1(sudokuMatrix1);//Solves its own matrix
             System.IO.File.WriteAllText(@"C:\answer1.txt", answer1);//Write answer
+            stopWatch1.Stop();
+            timeUsed1 = stopWatch1.ElapsedMilliseconds.ToString();
         }
         private void solver2()//Function to be called for thread starter
         {
+            Stopwatch stopWatch2 = new Stopwatch();
+            stopWatch2.Start();
             Solve2(sudokuMatrix2);//Solves its own matrix
             System.IO.File.WriteAllText(@"C:\answer2.txt", answer2);//Write answer
+            stopWatch2.Stop();
+            timeUsed2 = stopWatch2.ElapsedMilliseconds.ToString();
         }
         private void solver3()//Function to be called for thread starter
         {
+            Stopwatch stopWatch3 = new Stopwatch();
+            stopWatch3.Start();
             Solve3(sudokuMatrix3);//Solves its own matrix
             System.IO.File.WriteAllText(@"C:\answer3.txt", answer3);//Write answer
+            stopWatch3.Stop();
+            timeUsed3 = stopWatch3.ElapsedMilliseconds.ToString();
         }
         private void solver4()//Function to be called for thread starter
         {
+            Stopwatch stopWatch4 = new Stopwatch();
+            stopWatch4.Start();
             Solve4(sudokuMatrix4);//Solves its own matrix
             System.IO.File.WriteAllText(@"C:\answer4.txt", answer4);//Write answer
+            stopWatch4.Stop();
+            timeUsed4 = stopWatch4.ElapsedMilliseconds.ToString();
         }
         #endregion
         #region Solve sudoku//Functions for solving sudoku
@@ -321,15 +337,15 @@ namespace yazlab2
         } //Is there space for more calculations in sudoku
         bool IsFull2(int[,] matrix, ref int x, ref int y)
         {
-            for (x = 8; x > 0; x--)
-                for (y = 8; y > 0; y--)
+            for (x = 8; x >= 0; x--)
+                for (y = 8; y >= 0; y--)
                     if (matrix[x, y] == 0)
                         return false;
             return true;
         } //Is there space for more calculations in sudoku
         bool IsFull3(int[,] matrix, ref int x, ref int y)
         {
-            for (x = 8; x > 0; x--)
+            for (x = 8; x >= 0; x--)
                 for (y = 0; y < 9; y++)
                     if (matrix[x, y] == 0)
                         return false;
@@ -338,7 +354,7 @@ namespace yazlab2
         bool IsFull4(int[,] matrix, ref int x, ref int y)
         {
             for (x = 0; x < 9; x++)
-                for (y = 8; y > 0; y--)
+                for (y = 8; y >= 0; y--)
                     if (matrix[x, y] == 0)
                         return false;
             return true;
@@ -374,5 +390,13 @@ namespace yazlab2
         }//Can this number be used
 
         #endregion
+
+        private void btnTime_Click(object sender, EventArgs e)
+        {
+            thread1Label.Text = timeUsed1 + " ms";
+            thread2Label.Text = timeUsed2 + " ms";
+            thread3Label.Text = timeUsed3 + " ms";
+            thread4Label.Text = timeUsed4 + " ms";
+        }
     }
 }
