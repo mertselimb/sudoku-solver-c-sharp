@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -15,85 +9,85 @@ namespace yazlab2
 {
     public partial class Form1 : Form
     {
-        #region Definitions
+        #region Definitions//Defines what is needed publicly
         public Form1()
         {
             InitializeComponent();
         }
-        static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
-        int[,] sudokuMatrix1;
+        static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();//To print what happens
+        int[,] sudokuMatrix1;//Thread matrix
         int[,] sudokuMatrix2;
         int[,] sudokuMatrix3;
         int[,] sudokuMatrix4;
-        bool stopSwitch = false;
-        Thread th1;
+        bool stopSwitch = false;//When one thread ends this will end all
+        Thread th1;//Threads created
         Thread th2;
         Thread th3;
         Thread th4;
-        String answer1;
+        String answer1;//Answers to write in txt files 
         String answer2;
         String answer3;
         String answer4;
-        int step1=0;
+        int step1=0;//Step counter
         int step2=0;
         int step3=0;
         int step4=0;
         #endregion
-        #region Clicks
-        private void btnBrowse_Click(object sender, EventArgs e)
+        #region Clicks//Button click functions needed for form ui
+        private void btnBrowse_Click(object sender, EventArgs e)//When browse clicked
         {
 
-            string sudokuSource = File.ReadAllText(@"C:\sudoku.txt");
-            char[] array = sudokuSource.ToCharArray();
+            string sudokuSource = File.ReadAllText(@"C:\sudoku.txt");//Read file
+            char[] array = sudokuSource.ToCharArray();//To char array becouse you can not change strings 
             for (int i = 0; i < sudokuSource.Length; i++)
             {
                 if (String.Equals('*', sudokuSource[i]))
                 {
-                    array[i] = '0';
+                    array[i] = '0';//Getting rid of *'s for int matrix
                 }
             }
 
             int[,] matrix = new int[9, 9];
-            int index = 0;
+            int index = 0;//index of char array
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    while ((int)Char.GetNumericValue(array[index]) == -1)
+                    while ((int)Char.GetNumericValue(array[index]) == -1)//We don't need blank spaces in our matrix (like line endings and empty sudoku spaces)
                     {
                         index++;
                     };
                     matrix[i, j] = (int)Char.GetNumericValue(array[index]);
 
-                    if (array.Length <= index)
+                    if (array.Length <= index)//For overflow from last step
                     {
                         break;
                     }
                     index++;
                 }
-                if (array.Length <= index)
+                if (array.Length <= index)//For overflow from last step
                 {
                     break;
                 }
             }
 
-            sudokuMatrix1 = matrix;
+            sudokuMatrix1 = matrix;//Data transferred to public matrix
             sudokuMatrix2 = matrix;
             sudokuMatrix3 = matrix;
             sudokuMatrix4 = matrix;
-            print(0, sudokuMatrix1);
+            print(0, sudokuMatrix1);//Printed to textboxes
         }
-        private void btnSolve_Click(object sender, EventArgs e)
+        private void btnSolve_Click(object sender, EventArgs e)//Solve the sudoku
         {
-            if (sudokuMatrix1==null)
+            if (sudokuMatrix1==null)//If user didn't browse before i shouldn't work
             {
                 MessageBox.Show("You need to open a sudoku first!");
                 return;
             }
-            myTimer.Tick += new EventHandler(printAll);
+            myTimer.Tick += new EventHandler(printAll);//Timer for showing what happens in solve function
             myTimer.Interval = 1;
             myTimer.Start();
-            th1 = new Thread(solver1);
+            th1 = new Thread(solver1);//Threads are started with their own solve function
             th1.Start();
             th2 = new Thread(solver2);
             th2.Start();
@@ -102,89 +96,89 @@ namespace yazlab2
             th4 = new Thread(solver4);
             th4.Start();
         }
-        private void btnPrint_Click(object sender, EventArgs e)
+        /*private void btnPrint_Click(object sender, EventArgs e)//Written before but not used prints all matrixs
         {
             print(1, sudokuMatrix1);
             print(2, sudokuMatrix2);
             print(3, sudokuMatrix3);
             print(4, sudokuMatrix4);
-        }
-        private void btnOpenAnswer_Click(object sender, EventArgs e)
+        }*/
+        private void btnOpenAnswer_Click(object sender, EventArgs e)//Opens the file that shows answer steps 
         {
 
-            Process.Start(@"c:\answer1.txt");
+            Process.Start(@"c:\answer1.txt");//Open the file at this location with default app
             Process.Start(@"c:\answer2.txt");
             Process.Start(@"c:\answer3.txt");
             Process.Start(@"c:\answer4.txt");
         }
-        #endregion
-        #region Print
-        private void print(int select, int[,] matrix)
+        #endregion//
+        #region Print//Print functions for textbox responsiveness
+        private void print(int select, int[,] matrix)//Print whatever needed
         {
             string output = "";
             for (int i = 0; i < 9; i++)
             {
-                for (int j = 0; j < 9; j++)
+                for (int j = 0; j < 9; j++)//Matrix to string
                 {
                     output += matrix[i, j];
                 }
             }
-            if (select == 0)
+            if (select == 0)//0 means write all
             {
-                textBox1.Text = output;
+                textBox1.Text = output;//Textboxes getting matrrix data in string form
                 textBox2.Text = output;
                 textBox3.Text = output;
                 textBox4.Text = output;
             }
-            if (select == 1)
+            if (select == 1)//Only textbox1 gets data
             {
                 textBox1.Text = output;
             }
-            if (select == 2)
+            if (select == 2)//Only textbox2 gets data
             {
                 textBox2.Text = output;
             }
-            if (select == 3)
+            if (select == 3)//Only textbox3 gets data
             {
                 textBox3.Text = output;
             }
-            if (select == 4)
+            if (select == 4)//Only textbox4 gets data
             {
                 textBox4.Text = output;
             }
         }
-        private void printAll(Object myObject, EventArgs myEventArgs)
+        private void printAll(Object myObject, EventArgs myEventArgs)//Pritns all for timer function
         {
-            print(1, sudokuMatrix1);
+            print(1, sudokuMatrix1);//Print selected matrix to It's textbox
             print(2, sudokuMatrix2);
             print(3, sudokuMatrix3);
             print(4, sudokuMatrix4);
         }
         #endregion
-        #region Threads
-        private void solver1()
+        #region Threads//Thread functions
+        private void solver1()//Function to be called for thread starter
         {
-            Solve1(sudokuMatrix1);
-            System.IO.File.WriteAllText(@"C:\answer1.txt", answer1);
+            Solve1(sudokuMatrix1);//Solves its own matrix
+            System.IO.File.WriteAllText(@"C:\answer1.txt", answer1);//Write answer
         }
-        private void solver2()
+        private void solver2()//Function to be called for thread starter
         {
-            Solve2(sudokuMatrix2);
-            System.IO.File.WriteAllText(@"C:\answer2.txt", answer2);
+            Solve2(sudokuMatrix2);//Solves its own matrix
+            System.IO.File.WriteAllText(@"C:\answer2.txt", answer2);//Write answer
         }
-        private void solver3()
+        private void solver3()//Function to be called for thread starter
         {
-            Solve3(sudokuMatrix3);
-            System.IO.File.WriteAllText(@"C:\answer3.txt", answer3);
+            Solve3(sudokuMatrix3);//Solves its own matrix
+            System.IO.File.WriteAllText(@"C:\answer3.txt", answer3);//Write answer
         }
-        private void solver4()
+        private void solver4()//Function to be called for thread starter
         {
-            Solve4(sudokuMatrix4);
-            System.IO.File.WriteAllText(@"C:\answer4.txt", answer4);
+            Solve4(sudokuMatrix4);//Solves its own matrix
+            System.IO.File.WriteAllText(@"C:\answer4.txt", answer4);//Write answer
         }
         #endregion
-        #region Solve sudoku
-        private bool IsEmpty(int input)
+        #region Solve sudoku//Functions for solving sudoku
+        /*private bool IsEmpty(int input)//Looking for is the space that sent is empty(not used)
         {
             bool answer = false;
             if (input == 0)
@@ -192,130 +186,130 @@ namespace yazlab2
                 answer = true;
             }
             return answer;
-        }
-        private bool Solve1(int[,] matrix)
+        }*/
+        private bool Solve1(int[,] matrix)//Real solver function
         {
-            if (stopSwitch)
+            if (stopSwitch)//If any other thread solves sudoku this will stop all others
             {
                 //answer1 += ++step1 + ") Stop switch is initated." + Environment.NewLine;
                 return false;
             }
-            int x = 0;
-            int y = 0;
-            if (IsFull1(matrix, ref x, ref y))
+            int x = 0;//Sudoku row to used
+            int y = 0;//Sudoku collumn to used
+            if (IsFull1(matrix, ref x, ref y))//Is sudoku finished?Is there any space to work on?
             {
-                answer1 += ++step1 + ") Sudoku is full" + Environment.NewLine;
+                answer1 += ++step1 + ") Sudoku is full" + Environment.NewLine;//Step logs
                 stopSwitch = true;
                 return true;
             }
             answer1 +=++step1 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
-            for (int num = 1; num <= 9; num++)
+            for (int num = 1; num <= 9; num++)//Tries numbers from 1 to 9 calls function for all of them
             {
-                if (IsSafe(matrix, x, y, num))
+                if (IsSafe(matrix, x, y, num))//Looks for a problem with the current number
                 {
-                    matrix[x, y] = num;
-                    answer1 += ++step1 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
-                    if (Solve1(matrix))
+                    matrix[x, y] = num;//If there is non then uses it
+                    answer1 += ++step1 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;//Step logs
+                    if (Solve1(matrix))//Recursively tries all in called functions
                         return true;
 
-                    matrix[x, y] = 0;
+                    matrix[x, y] = 0;//Program made a mistake it goes back(Becouse it doesn't returned from the if up there)
                 }
             }
-            answer1 += ++step1 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
-            return false;
+            answer1 += ++step1 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;//Step logs
+            return false;//We came a wrong way go back to function that called you or there is no solution
         }
-        private bool Solve2(int[,] matrix)
+        private bool Solve2(int[,] matrix)//Real solver function
         {
-            if (stopSwitch)
+            if (stopSwitch)//If any other thread solves sudoku this will stop all others
             {
                 //answer2 += ++step2 + ") Stop switch is initated." + Environment.NewLine;
                 return false;
             }
-            int x = 0;
-            int y = 0;
-            if (IsFull2(matrix, ref x, ref y))
+            int x = 0;//Sudoku row to used
+            int y = 0;//Sudoku collumn to used
+            if (IsFull2(matrix, ref x, ref y))//Is sudoku finished?Is there any space to work on?
             {
                 stopSwitch = true;
-                answer2 += ++step2 + ") Sudoku is full" + Environment.NewLine;
+                answer2 += ++step2 + ") Sudoku is full" + Environment.NewLine;//Step logs
                 return true;
             }
-            answer2 += ++step2 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
-            for (int num = 1; num <= 9; num++)
+            answer2 += ++step2 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;//Step logs
+            for (int num = 1; num <= 9; num++)//Tries numbers from 1 to 9 calls function for all of them
             {
-                if (IsSafe(matrix, x, y, num))
+                if (IsSafe(matrix, x, y, num))//Looks for a problem with the current number
                 {
-                    matrix[x, y] = num;
-                    answer2 += ++step2 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
-                    if (Solve2(matrix))
+                    matrix[x, y] = num;//If there is non then uses it
+                    answer2 += ++step2 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;//Step logs
+                    if (Solve2(matrix))//Recursively tries all in called functions
                         return true;
 
-                    matrix[x, y] = 0;
+                    matrix[x, y] = 0;//Program made a mistake it goes back(Becouse it doesn't returned from the if up there)
                 }
             }
-            answer2 += ++step2 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
-            return false;
+            answer2 += ++step2 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;//Step logs
+            return false;//We came a wrong way go back to function that called you or there is no solution
         }
-        private bool Solve3(int[,] matrix)
+        private bool Solve3(int[,] matrix)//Real solver function
         {
-            if (stopSwitch)
+            if (stopSwitch)//If any other thread solves sudoku this will stop all others
             {
                 //answer3 += ++step3 + ") Stop switch is initated." + Environment.NewLine;
                 return false;
             }
-            int x = 0;
-            int y = 0;
-            if (IsFull3(matrix, ref x, ref y))
+            int x = 0;//Sudoku row to used
+            int y = 0;//Sudoku collumn to used
+            if (IsFull3(matrix, ref x, ref y))//Is sudoku finished?Is there any space to work on?
             {
-                answer3 += ++step3 + ") Sudoku is full" + Environment.NewLine;
+                answer3 += ++step3 + ") Sudoku is full" + Environment.NewLine;//Step logs
                 stopSwitch = true;
                 return true;
             }
-            answer3 += ++step3 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
-            for (int num = 1; num <= 9; num++)
+            answer3 += ++step3 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;//Step logs
+            for (int num = 1; num <= 9; num++)//Tries numbers from 1 to 9 calls function for all of them
             {
-                if (IsSafe(matrix, x, y, num))
+                if (IsSafe(matrix, x, y, num))//Looks for a problem with the current number
                 {
-                    matrix[x, y] = num;
-                    answer3 += ++step3 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
-                    if (Solve3(matrix))
+                    matrix[x, y] = num;//If there is non then uses it
+                    answer3 += ++step3 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;//Step logs
+                    if (Solve3(matrix))//Recursively tries all in called functions
                         return true;
 
-                    matrix[x, y] = 0;
+                    matrix[x, y] = 0;//Program made a mistake it goes back(Becouse it doesn't returned from the if up there)
                 }
             }
-            answer3 += ++step3 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
-            return false;
+            answer3 += ++step3 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;//Step logs
+            return false;//We came a wrong way go back to function that called you or there is no solution
         }
-        private bool Solve4(int[,] matrix)
+        private bool Solve4(int[,] matrix)//Real solver function
         {
-            if (stopSwitch)
+            if (stopSwitch)//If any other thread solves sudoku this will stop all others
             {
                 //answer4 += ++step4 + ") Stop switch is initated." + Environment.NewLine;
                 return false;
             }
-            int x = 0;
-            int y = 0;
-            if (IsFull4(matrix, ref x, ref y))
+            int x = 0;//Sudoku row to used
+            int y = 0;//Sudoku collumn to used
+            if (IsFull4(matrix, ref x, ref y))//Is sudoku finished?Is there any space to work on?
             {
-                answer4 += ++step4 + ") Sudoku is full" + Environment.NewLine;
+                answer4 += ++step4 + ") Sudoku is full" + Environment.NewLine;//Step logs
                 stopSwitch = true;
                 return true;
             }
-            answer4 += ++step4 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
-            for (int num = 1; num <= 9; num++)
+            answer4 += ++step4 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;//Step logs
+            for (int num = 1; num <= 9; num++)//Tries numbers from 1 to 9 calls function for all of them
             {
-                if (IsSafe(matrix, x, y, num))
+                if (IsSafe(matrix, x, y, num))//Looks for a problem with the current number
                 {
-                    matrix[x, y] = num;
-                    answer4 += ++step4 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
-                    if (Solve4(matrix))
+                    matrix[x, y] = num;//If there is non then uses it
+                    answer4 += ++step4 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;//Step logs
+                    if (Solve4(matrix))//Recursively tries all in called functions
                         return true;
 
-                    matrix[x, y] = 0;
+                    matrix[x, y] = 0;//Program made a mistake it goes back(Becouse it doesn't returned from the if up there)
                 }
             }
-            answer4 += ++step4 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
-            return false;
+            answer4 += ++step4 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;//Step logs
+            return false;//We came a wrong way go back to function that called you or there is no solution
         }
         bool IsFull1(int[,] matrix, ref int x, ref int y)
         {
