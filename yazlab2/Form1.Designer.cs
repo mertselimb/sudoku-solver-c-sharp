@@ -34,6 +34,7 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.btnSolve = new System.Windows.Forms.Button();
+            this.btnOpenAnswer = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnBrowse
@@ -100,11 +101,22 @@
             this.btnSolve.UseVisualStyleBackColor = true;
             this.btnSolve.Click += new System.EventHandler(this.btnSolve_Click);
             // 
+            // btnOpenAnswer
+            // 
+            this.btnOpenAnswer.Location = new System.Drawing.Point(224, 414);
+            this.btnOpenAnswer.Name = "btnOpenAnswer";
+            this.btnOpenAnswer.Size = new System.Drawing.Size(75, 53);
+            this.btnOpenAnswer.TabIndex = 6;
+            this.btnOpenAnswer.Text = "Open answer steps";
+            this.btnOpenAnswer.UseVisualStyleBackColor = true;
+            this.btnOpenAnswer.Click += new System.EventHandler(this.btnOpenAnswer_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(306, 479);
+            this.Controls.Add(this.btnOpenAnswer);
             this.Controls.Add(this.btnSolve);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.textBox3);
@@ -126,6 +138,7 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button btnSolve;
+        private System.Windows.Forms.Button btnOpenAnswer;
     }
 }
 

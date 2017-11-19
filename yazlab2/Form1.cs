@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -24,14 +25,24 @@ namespace yazlab2
         int[,] sudokuMatrix2;
         int[,] sudokuMatrix3;
         int[,] sudokuMatrix4;
+        bool stopSwitch = false;
         Thread th1;
         Thread th2;
         Thread th3;
         Thread th4;
+        String answer1;
+        String answer2;
+        String answer3;
+        String answer4;
+        int step1=0;
+        int step2=0;
+        int step3=0;
+        int step4=0;
         #endregion
         #region Clicks
         private void btnBrowse_Click(object sender, EventArgs e)
         {
+
             string sudokuSource = File.ReadAllText(@"C:\sudoku.txt");
             char[] array = sudokuSource.ToCharArray();
             for (int i = 0; i < sudokuSource.Length; i++)
@@ -74,6 +85,11 @@ namespace yazlab2
         }
         private void btnSolve_Click(object sender, EventArgs e)
         {
+            if (sudokuMatrix1==null)
+            {
+                MessageBox.Show("You need to open a sudoku first!");
+                return;
+            }
             myTimer.Tick += new EventHandler(printAll);
             myTimer.Interval = 1;
             myTimer.Start();
@@ -92,6 +108,14 @@ namespace yazlab2
             print(2, sudokuMatrix2);
             print(3, sudokuMatrix3);
             print(4, sudokuMatrix4);
+        }
+        private void btnOpenAnswer_Click(object sender, EventArgs e)
+        {
+
+            Process.Start(@"c:\answer1.txt");
+            Process.Start(@"c:\answer2.txt");
+            Process.Start(@"c:\answer3.txt");
+            Process.Start(@"c:\answer4.txt");
         }
         #endregion
         #region Print
@@ -140,23 +164,27 @@ namespace yazlab2
         #region Threads
         private void solver1()
         {
-            solve(sudokuMatrix1);
+            Solve1(sudokuMatrix1);
+            System.IO.File.WriteAllText(@"C:\answer1.txt", answer1);
         }
         private void solver2()
         {
-            solve(sudokuMatrix2);
+            Solve2(sudokuMatrix2);
+            System.IO.File.WriteAllText(@"C:\answer2.txt", answer2);
         }
         private void solver3()
         {
-            solve(sudokuMatrix3);
+            Solve3(sudokuMatrix3);
+            System.IO.File.WriteAllText(@"C:\answer3.txt", answer3);
         }
         private void solver4()
         {
-            solve(sudokuMatrix4);
+            Solve4(sudokuMatrix4);
+            System.IO.File.WriteAllText(@"C:\answer4.txt", answer4);
         }
         #endregion
         #region Solve sudoku
-        private bool isEmpty(int input)
+        private bool IsEmpty(int input)
         {
             bool answer = false;
             if (input == 0)
@@ -165,53 +193,176 @@ namespace yazlab2
             }
             return answer;
         }
-        private bool solve(int[,] matrix)
+        private bool Solve1(int[,] matrix)
         {
+            if (stopSwitch)
+            {
+                //answer1 += ++step1 + ") Stop switch is initated." + Environment.NewLine;
+                return false;
+            }
             int x = 0;
             int y = 0;
-            if (isFull(matrix, ref x, ref y))
+            if (IsFull1(matrix, ref x, ref y))
+            {
+                answer1 += ++step1 + ") Sudoku is full" + Environment.NewLine;
+                stopSwitch = true;
                 return true;
-
+            }
+            answer1 +=++step1 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
             for (int num = 1; num <= 9; num++)
             {
-                if (isSafe(matrix, x, y, num))
+                if (IsSafe(matrix, x, y, num))
                 {
                     matrix[x, y] = num;
-
-                    if (solve(matrix))
+                    answer1 += ++step1 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
+                    if (Solve1(matrix))
                         return true;
 
                     matrix[x, y] = 0;
                 }
             }
+            answer1 += ++step1 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
             return false;
         }
-        //Is there space for more calculations in sudoku
-        bool isFull(int[,] matrix, ref int x, ref int y)
+        private bool Solve2(int[,] matrix)
+        {
+            if (stopSwitch)
+            {
+                //answer2 += ++step2 + ") Stop switch is initated." + Environment.NewLine;
+                return false;
+            }
+            int x = 0;
+            int y = 0;
+            if (IsFull2(matrix, ref x, ref y))
+            {
+                stopSwitch = true;
+                answer2 += ++step2 + ") Sudoku is full" + Environment.NewLine;
+                return true;
+            }
+            answer2 += ++step2 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
+            for (int num = 1; num <= 9; num++)
+            {
+                if (IsSafe(matrix, x, y, num))
+                {
+                    matrix[x, y] = num;
+                    answer2 += ++step2 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
+                    if (Solve2(matrix))
+                        return true;
+
+                    matrix[x, y] = 0;
+                }
+            }
+            answer2 += ++step2 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
+            return false;
+        }
+        private bool Solve3(int[,] matrix)
+        {
+            if (stopSwitch)
+            {
+                //answer3 += ++step3 + ") Stop switch is initated." + Environment.NewLine;
+                return false;
+            }
+            int x = 0;
+            int y = 0;
+            if (IsFull3(matrix, ref x, ref y))
+            {
+                answer3 += ++step3 + ") Sudoku is full" + Environment.NewLine;
+                stopSwitch = true;
+                return true;
+            }
+            answer3 += ++step3 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
+            for (int num = 1; num <= 9; num++)
+            {
+                if (IsSafe(matrix, x, y, num))
+                {
+                    matrix[x, y] = num;
+                    answer3 += ++step3 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
+                    if (Solve3(matrix))
+                        return true;
+
+                    matrix[x, y] = 0;
+                }
+            }
+            answer3 += ++step3 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
+            return false;
+        }
+        private bool Solve4(int[,] matrix)
+        {
+            if (stopSwitch)
+            {
+                //answer4 += ++step4 + ") Stop switch is initated." + Environment.NewLine;
+                return false;
+            }
+            int x = 0;
+            int y = 0;
+            if (IsFull4(matrix, ref x, ref y))
+            {
+                answer4 += ++step4 + ") Sudoku is full" + Environment.NewLine;
+                stopSwitch = true;
+                return true;
+            }
+            answer4 += ++step4 + ") " + x + "'x " + y + "'y is being controlled ." + Environment.NewLine;
+            for (int num = 1; num <= 9; num++)
+            {
+                if (IsSafe(matrix, x, y, num))
+                {
+                    matrix[x, y] = num;
+                    answer4 += ++step4 + ") " + x + "'x " + y + "'y is replaced with " + num + Environment.NewLine;
+                    if (Solve4(matrix))
+                        return true;
+
+                    matrix[x, y] = 0;
+                }
+            }
+            answer4 += ++step4 + ") " + " No further solution program will go back or end the process." + Environment.NewLine;
+            return false;
+        }
+        bool IsFull1(int[,] matrix, ref int x, ref int y)
         {
             for (x = 0; x < 9; x++)
                 for (y = 0; y < 9; y++)
                     if (matrix[x, y] == 0)
                         return false;
             return true;
-        }
-        //Looks at x
+        } //Is there space for more calculations in sudoku
+        bool IsFull2(int[,] matrix, ref int x, ref int y)
+        {
+            for (x = 8; x > 0; x--)
+                for (y = 8; y > 0; y--)
+                    if (matrix[x, y] == 0)
+                        return false;
+            return true;
+        } //Is there space for more calculations in sudoku
+        bool IsFull3(int[,] matrix, ref int x, ref int y)
+        {
+            for (x = 8; x > 0; x--)
+                for (y = 0; y < 9; y++)
+                    if (matrix[x, y] == 0)
+                        return false;
+            return true;
+        } //Is there space for more calculations in sudoku
+        bool IsFull4(int[,] matrix, ref int x, ref int y)
+        {
+            for (x = 0; x < 9; x++)
+                for (y = 8; y > 0; y--)
+                    if (matrix[x, y] == 0)
+                        return false;
+            return true;
+        } //Is there space for more calculations in sudoku
         bool UsedInRow(int[,] matrix, int x, int num)
         {
             for (int y = 0; y < 9; y++)
                 if (matrix[x, y] == num)
                     return true;
             return false;
-        }
-        //Looks at collumn
+        } //Looks at x
         bool UsedInCol(int[,] matrix, int y, int num)
         {
             for (int x = 0; x < 9; x++)
                 if (matrix[x, y] == num)
                     return true;
             return false;
-        }
-        //Looks at 3x3 box
+        }//Looks at collumn
         bool UsedInBox(int[,] matrix, int boxStartRow, int boxStartCol, int num)
         {
             for (int x = 0; x < 3; x++)
@@ -219,17 +370,15 @@ namespace yazlab2
                     if (matrix[x + boxStartRow, y + boxStartCol] == num)
                         return true;
             return false;
-        }
-        //Can this number be used
-        bool isSafe(int[,] matrix, int x, int y, int num)
+        }//Looks at 3x3 box
+        bool IsSafe(int[,] matrix, int x, int y, int num)
         {
             //Check rows collums and the box for the same number
             return !UsedInRow(matrix, x, num) &&
                    !UsedInCol(matrix, y, num) &&
                    !UsedInBox(matrix, x - x % 3, y - y % 3, num);
-        }
+        }//Can this number be used
 
         #endregion
-
     }
 }
