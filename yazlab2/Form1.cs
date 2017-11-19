@@ -110,6 +110,13 @@ namespace yazlab2
             Process.Start(@"c:\answer3.txt");
             Process.Start(@"c:\answer4.txt");
         }
+        private void btnTime_Click(object sender, EventArgs e)
+        {
+            thread1Label.Text = timeUsed1 + " ms";
+            thread2Label.Text = timeUsed2 + " ms";
+            thread3Label.Text = timeUsed3 + " ms";
+            thread4Label.Text = timeUsed4 + " ms";
+        }
         #endregion//
         #region Print//Print functions for textbox responsiveness
         private void print(int select, int[,] matrix)//Print whatever needed
@@ -390,13 +397,5 @@ namespace yazlab2
         }//Can this number be used
 
         #endregion
-
-        private void btnTime_Click(object sender, EventArgs e)
-        {
-            thread1Label.Text = timeUsed1 + " ms";
-            thread2Label.Text = timeUsed2 + " ms";
-            thread3Label.Text = timeUsed3 + " ms";
-            thread4Label.Text = timeUsed4 + " ms";
-        }
     }
 }

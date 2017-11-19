@@ -35,7 +35,6 @@
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.btnSolve = new System.Windows.Forms.Button();
             this.btnOpenAnswer = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.thread2Label = new System.Windows.Forms.Label();
@@ -120,15 +119,6 @@
             this.btnOpenAnswer.Text = "Open answer steps";
             this.btnOpenAnswer.UseVisualStyleBackColor = true;
             this.btnOpenAnswer.Click += new System.EventHandler(this.btnOpenAnswer_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "label1";
             // 
             // label2
             // 
@@ -222,7 +212,6 @@
             this.Controls.Add(this.thread2Label);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnOpenAnswer);
             this.Controls.Add(this.btnSolve);
             this.Controls.Add(this.textBox4);
@@ -246,7 +235,6 @@
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button btnSolve;
         private System.Windows.Forms.Button btnOpenAnswer;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label thread2Label;
