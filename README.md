@@ -1,7 +1,13 @@
+(Ödevdeki raporun aynısınıdr.Rapor zorla olarak gereksiz bilgi ve boş yazılarla doldurulmaya mecbur bırakılmaktadır.)
+
 SUDOKU ÇÖZÜCÜ
+
 Mert Selimbeyoğlu
+
 Bilgisayar Mühendisliği Bölümü
+
 Kocaeli Üniversitesi
+
                                                                  mertselimb@hotmail.com
 
 
